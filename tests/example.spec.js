@@ -1,19 +1,17 @@
 // @ts-check
 const { test, expect} = require('@playwright/test');
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
-
 test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+  await page.goto('https://dex.pokemonshowdown.com/');
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+  const pokedex = page.locator('input[placeholder="Search Pokémon, moves, abilities, items, types, or more"]');
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  await pokedex.click();
+  await pokedex.fill('pikachu');
+  const searchButton = page.locator('button.button:has-text("Pokédex Search")');
+  await searchButton.click()
+  await expect(page).toHaveURL('a[data-entry="pokemon|Pikachu"]');
+  const linkToPikachu = page.locator('a[data-entry="pokemon|Pikachu"]');
+  await linkToPikachu.click();
+  await expect(page).toHaveURL('https://dex.pokemonshowdown.com/pokemon/pikachu');
 });
